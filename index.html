@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Downloads Organizer</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- Title bar -->
+<div class="titlebar">
+  <div class="titlebar-left">
+    <img src="assets/icon.ico" class="titlebar-icon" onerror="this.style.display='none'"/>
+    <span class="titlebar-title">Downloads Organizer</span>
+    <span class="titlebar-version">v2.0</span>
+  </div>
+  <div class="titlebar-controls">
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">🇬🇷 GR</button>
+    <button class="win-btn" onclick="window.api.minimize()">─</button>
+    <button class="win-btn close-btn" onclick="window.api.close()">✕</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="app">
+
+  <!-- Folder selector -->
+  <div class="card" id="folderCard">
+    <div class="card-header">
+      <span class="card-icon">📂</span>
+      <span class="card-title" data-en="Select Folder" data-gr="Επιλογή Φακέλου">Select Folder</span>
+    </div>
+    <div class="folder-row">
+      <input type="text" id="folderInput" readonly
+        data-placeholder-en="Click to choose a folder..."
+        data-placeholder-gr="Κάντε κλικ για να επιλέξετε φάκελο..."
+        placeholder="Click to choose a folder..."/>
+      <button class="btn btn-primary" onclick="pickFolder()">
+        <span data-en="Browse" data-gr="Αναζήτηση">Browse</span>
+      </button>
+      <button class="btn btn-secondary" onclick="useDownloads()">
+        <span data-en="My Downloads" data-gr="Λήψεις μου">My Downloads</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card" id="previewCard" style="display:none">
+    <div class="card-header">
+      <span class="card-icon">👀</span>
+      <span class="card-title" data-en="Preview" data-gr="Προεπισκόπηση">Preview</span>
+      <span class="badge" id="previewCount"></span>
+    </div>
+    <div class="category-grid" id="categoryGrid"></div>
+    <div class="action-row">
+      <button class="btn btn-green btn-lg" onclick="organize()">
+        <span data-en="Organize Now" data-gr="Οργάνωση Τώρα">Organize Now</span>
+      </button>
+      <button class="btn btn-secondary" onclick="resetView()">
+        <span data-en="Cancel" data-gr="Ακύρωση">Cancel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card" id="resultsCard" style="display:none">
+    <div class="card-header">
+      <span class="card-icon">✅</span>
+      <span class="card-title" data-en="Done!" data-gr="Ολοκληρώθηκε!">Done!</span>
+      <span class="badge badge-green" id="movedCount"></span>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+    <div class="action-row">
+      <button class="btn btn-secondary" onclick="undo()">
+        <span data-en="↩ Undo" data-gr="↩ Αναίρεση">↩ Undo</span>
+      </button>
+      <button class="btn btn-secondary" onclick="openLog()">
+        <span data-en="📋 View Log" data-gr="📋 Ιστορικό">📋 View Log</span>
+      </button>
+      <button class="btn btn-green" onclick="resetView()">
+        <span data-en="Organize Another" data-gr="Νέα Οργάνωση">Organize Another</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scheduler -->
+  <div class="card" id="schedulerCard">
+    <div class="card-header">
+      <span class="card-icon">⏰</span>
+      <span class="card-title" data-en="Auto-Schedule" data-gr="Αυτόματη Εκτέλεση">Auto-Schedule</span>
+    </div>
+    <p class="card-desc" data-en="Run automatically every Monday at 9:00 AM" data-gr="Εκτέλεση κάθε Δευτέρα στις 9:00 πμ">
+      Run automatically every Monday at 9:00 AM
+    </p>
+    <div class="action-row">
+      <button class="btn btn-secondary" onclick="scheduleTask()">
+        <span data-en="Enable Auto-Run" data-gr="Ενεργοποίηση">Enable Auto-Run</span>
+      </button>
+      <button class="btn btn-danger" onclick="unscheduleTask()">
+        <span data-en="Disable" data-gr="Απενεργοποίηση">Disable</span>
+      </button>
+    </div>
+    <div id="scheduleMsg" class="schedule-msg"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
