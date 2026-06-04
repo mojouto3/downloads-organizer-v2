@@ -1,6 +1,6 @@
 # Downloads Organizer v2.0
 
-> A modern, elegant desktop application to automatically sort your Downloads folder — built with Electron.
+> A modern, elegant desktop application to automatically sort your Downloads folder built with Electron.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
@@ -11,7 +11,7 @@
 
 ## What is Downloads Organizer?
 
-Downloads Organizer is a free, open-source Windows desktop app that sorts your messy Downloads folder into clean, organized subfolders — with a single click. No command line, no configuration, no technical knowledge required. Just open, preview, and organize.
+Downloads Organizer is a free, open-source Windows desktop app that sorts your messy Downloads folder into clean, organized subfolders, with a single click. No command line, no configuration, no technical knowledge required. Just open, preview, and organize.
 
 This is the v2.0 rewrite of the original [Downloads Organizer v1](https://github.com/mojouto3/downloads-organizer), now featuring a full graphical interface built with Electron.
 
@@ -19,25 +19,25 @@ This is the v2.0 rewrite of the original [Downloads Organizer v1](https://github
 
 ## Screenshots
 
-> A clean dark interface with green accents — easy on the eyes, easy to use.
+> A clean dark interface with green accents, easy on the eyes, easy to use.
 
 | Select & Preview | Results | Auto-Schedule |
 |---|---|---|
-| Browse or auto-detect your Downloads folder, see exactly what will be moved before doing anything | After organizing, see a clear summary grouped by category | Set it and forget it — runs automatically every Monday at 9:00 AM |
+| Browse or auto-detect your Downloads folder, see exactly what will be moved before doing anything | After organizing, see a clear summary grouped by category | Set it and forget it runs automatically every Monday at 9:00 AM |
 
 ---
 
 ## Features
 
-- **Modern GUI** — dark theme with a clean, minimal interface
-- **Smart Preview** — see exactly what files will be moved, grouped by category, before committing
-- **One-click Organize** — sorts files instantly into the right folders
-- **Undo** — changed your mind? Restore everything back to where it was
-- **Log History** — every session is logged so you always know what happened
-- **Auto-Schedule** — set it to run automatically every week via Windows Task Scheduler
-- **Bilingual** — full Greek 🇬🇷 and English 🇬🇧 support, switchable in real time
-- **Custom Icon** — branded Desktop shortcut so it always looks the part
-- **Safe** — only moves files, never deletes anything
+- **Modern GUI** ➔ dark theme with a clean, minimal interface
+- **Smart Preview** ➔ see exactly what files will be moved, grouped by category, before committing
+- **One-click Organize** ➔ sorts files instantly into the right folders
+- **Undo** ➔ changed your mind? Restore everything back to where it was
+- **Log History** ➔ every session is logged so you always know what happened
+- **Auto-Schedule** ➔ set it to run automatically every week via Windows Task Scheduler
+- **Bilingual** ➔ full Greek 🇬🇷 and English 🇬🇧 support, switchable in real time
+- **Custom Icon** ➔ branded Desktop shortcut so it always looks the part
+- **Safe** ➔ only moves files, never deletes anything
 
 ---
 
@@ -70,7 +70,7 @@ This is the v2.0 rewrite of the original [Downloads Organizer v1](https://github
 
 1. Double-click the **Downloads Organizer** shortcut on your Desktop
 2. Click **My Downloads** to auto-detect your Downloads folder, or **Browse** to choose any folder
-3. Review the **Preview** — see what will be moved and where
+3. Review the **Preview** & see what will be moved and where
 4. Click **Organize Now**
 5. Done! Use **↩ Undo** if you want to reverse, or **📋 View Log** to see the history
 
@@ -147,13 +147,13 @@ To add new file types, edit the `CATEGORIES` object in `main.js`.
 
 ## Related
 
-- [Downloads Organizer v1](https://github.com/mojouto3/downloads-organizer) — the original lightweight PowerShell + NSIS version
+- [Downloads Organizer v1](https://github.com/mojouto3/downloads-organizer) The original lightweight PowerShell + NSIS version
 
 ---
 
 ## License
 
-MIT License — free to use, modify, and share. See [LICENSE](LICENSE) for details.
+MIT License-free to use, modify, and share. See [LICENSE](LICENSE) for details.
 
 ---
 
