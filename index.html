@@ -16,19 +16,21 @@
     <span class="titlebar-version">v2.0</span>
   </div>
   <div class="titlebar-controls">
-    <button class="lang-btn" id="langBtn" onclick="toggleLang()">🇬🇷 GR</button>
-    <button class="win-btn" onclick="window.api.minimize()">─</button>
-    <button class="win-btn close-btn" onclick="window.api.close()">✕</button>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">GR</button>
+    <button class="nav-btn" id="navHome" onclick="showPage('home')" data-en="Organize" data-gr="Οργάνωση">Organize</button>
+    <button class="nav-btn" id="navLog" onclick="showPage('log')" data-en="History" data-gr="Ιστορικό">History</button>
+    <button class="win-btn" onclick="window.api.minimize()">&#8722;</button>
+    <button class="win-btn close-btn" onclick="window.api.close()">&#x2715;</button>
   </div>
 </div>
 
-<!-- Main -->
-<div class="app">
+<!-- ══ PAGE: HOME ══ -->
+<div class="page" id="pageHome">
 
   <!-- Folder selector -->
-  <div class="card" id="folderCard">
+  <div class="card">
     <div class="card-header">
-      <span class="card-icon">📂</span>
+      <span class="card-icon">&#128194;</span>
       <span class="card-title" data-en="Select Folder" data-gr="Επιλογή Φακέλου">Select Folder</span>
     </div>
     <div class="folder-row">
@@ -36,74 +38,71 @@
         data-placeholder-en="Click to choose a folder..."
         data-placeholder-gr="Κάντε κλικ για να επιλέξετε φάκελο..."
         placeholder="Click to choose a folder..."/>
-      <button class="btn btn-primary" onclick="pickFolder()">
-        <span data-en="Browse" data-gr="Αναζήτηση">Browse</span>
-      </button>
-      <button class="btn btn-secondary" onclick="useDownloads()">
-        <span data-en="My Downloads" data-gr="Λήψεις μου">My Downloads</span>
-      </button>
+      <button class="btn btn-primary" onclick="pickFolder()" data-en="Browse" data-gr="Αναζήτηση">Browse</button>
+      <button class="btn btn-secondary" onclick="useDownloads()" data-en="My Downloads" data-gr="Λήψεις μου">My Downloads</button>
     </div>
   </div>
 
   <!-- Preview -->
   <div class="card" id="previewCard" style="display:none">
     <div class="card-header">
-      <span class="card-icon">👀</span>
+      <span class="card-icon">&#128064;</span>
       <span class="card-title" data-en="Preview" data-gr="Προεπισκόπηση">Preview</span>
       <span class="badge" id="previewCount"></span>
     </div>
     <div class="category-grid" id="categoryGrid"></div>
     <div class="action-row">
-      <button class="btn btn-green btn-lg" onclick="organize()">
-        <span data-en="Organize Now" data-gr="Οργάνωση Τώρα">Organize Now</span>
-      </button>
-      <button class="btn btn-secondary" onclick="resetView()">
-        <span data-en="Cancel" data-gr="Ακύρωση">Cancel</span>
-      </button>
+      <button class="btn btn-green btn-lg" id="organizeBtn" onclick="organize()" data-en="Organize Now" data-gr="Οργάνωση Τώρα">Organize Now</button>
+      <button class="btn btn-secondary" onclick="resetView()" data-en="Cancel" data-gr="Ακύρωση">Cancel</button>
     </div>
   </div>
 
   <!-- Results -->
   <div class="card" id="resultsCard" style="display:none">
     <div class="card-header">
-      <span class="card-icon">✅</span>
+      <span class="card-icon">&#9989;</span>
       <span class="card-title" data-en="Done!" data-gr="Ολοκληρώθηκε!">Done!</span>
       <span class="badge badge-green" id="movedCount"></span>
     </div>
     <div class="results-grid" id="resultsGrid"></div>
     <div class="action-row">
-      <button class="btn btn-secondary" onclick="undo()">
-        <span data-en="↩ Undo" data-gr="↩ Αναίρεση">↩ Undo</span>
-      </button>
-      <button class="btn btn-secondary" onclick="openLog()">
-        <span data-en="📋 View Log" data-gr="📋 Ιστορικό">📋 View Log</span>
-      </button>
-      <button class="btn btn-green" onclick="resetView()">
-        <span data-en="Organize Another" data-gr="Νέα Οργάνωση">Organize Another</span>
-      </button>
+      <button class="btn btn-secondary" onclick="undo()" data-en="&#8629; Undo" data-gr="&#8629; Αναίρεση">&#8629; Undo</button>
+      <button class="btn btn-secondary" onclick="showPage('log')" data-en="&#128203; View History" data-gr="&#128203; Ιστορικό">&#128203; View History</button>
+      <button class="btn btn-green" onclick="resetView()" data-en="Organize Another" data-gr="Νέα Οργάνωση">Organize Another</button>
     </div>
   </div>
 
   <!-- Scheduler -->
-  <div class="card" id="schedulerCard">
+  <div class="card">
     <div class="card-header">
-      <span class="card-icon">⏰</span>
+      <span class="card-icon">&#9200;</span>
       <span class="card-title" data-en="Auto-Schedule" data-gr="Αυτόματη Εκτέλεση">Auto-Schedule</span>
     </div>
-    <p class="card-desc" data-en="Run automatically every Monday at 9:00 AM" data-gr="Εκτέλεση κάθε Δευτέρα στις 9:00 πμ">
-      Run automatically every Monday at 9:00 AM
-    </p>
+    <p class="card-desc" data-en="Run automatically every Monday at 9:00 AM" data-gr="Εκτέλεση κάθε Δευτέρα στις 9:00 πμ">Run automatically every Monday at 9:00 AM</p>
     <div class="action-row">
-      <button class="btn btn-secondary" onclick="scheduleTask()">
-        <span data-en="Enable Auto-Run" data-gr="Ενεργοποίηση">Enable Auto-Run</span>
-      </button>
-      <button class="btn btn-danger" onclick="unscheduleTask()">
-        <span data-en="Disable" data-gr="Απενεργοποίηση">Disable</span>
-      </button>
+      <button class="btn btn-secondary" onclick="scheduleTask()" data-en="Enable Auto-Run" data-gr="Ενεργοποίηση">Enable Auto-Run</button>
+      <button class="btn btn-danger" onclick="unscheduleTask()" data-en="Disable" data-gr="Απενεργοποίηση">Disable</button>
     </div>
     <div id="scheduleMsg" class="schedule-msg"></div>
   </div>
 
+</div>
+
+<!-- ══ PAGE: LOG ══ -->
+<div class="page" id="pageLog" style="display:none">
+  <div class="card" style="flex:1">
+    <div class="card-header">
+      <span class="card-icon">&#128203;</span>
+      <span class="card-title" data-en="Session History" data-gr="Ιστορικό Συνεδριών">Session History</span>
+      <span class="badge" id="logCount"></span>
+      <button class="btn btn-danger btn-sm" onclick="clearLog()" style="margin-left:auto" data-en="Clear All" data-gr="Διαγραφή Όλων">Clear All</button>
+    </div>
+    <div id="logEmpty" class="log-empty" style="display:none">
+      <div class="log-empty-icon">&#128203;</div>
+      <div class="log-empty-text" data-en="No history yet. Organize a folder to get started!" data-gr="Δεν υπάρχει ιστορικό ακόμα.">No history yet. Organize a folder to get started!</div>
+    </div>
+    <div id="logList" class="log-list"></div>
+  </div>
 </div>
 
 <!-- Toast -->
