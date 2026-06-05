@@ -42,7 +42,7 @@ const CATEGORIES = {
   Torrents:   ['.torrent']
 };
 
-const LOG_FILE = path.join(os.homedir(), 'downloads-organizer.log');
+const LOG_FILE = path.join(os.homedir(), 'downloads-organizer.json');
 
 function getCategory(ext) {
   for (const [cat, exts] of Object.entries(CATEGORIES)) {
@@ -59,6 +59,25 @@ function getUniqueDest(destFolder, filename) {
   let i = 1;
   do { dest = path.join(destFolder, `${base}_${i}${ext}`); i++; } while (fs.existsSync(dest));
   return dest;
+}
+
+// ── JSON Log helpers ──────────────────────────────────────────────
+function readLog() {
+  try {
+    if (fs.existsSync(LOG_FILE)) return JSON.parse(fs.readFileSync(LOG_FILE, 'utf8'));
+  } catch (e) {}
+  return [];
+}
+
+function writeLog(sessions) {
+  fs.writeFileSync(LOG_FILE, JSON.stringify(sessions, null, 2));
+}
+
+function appendSession(session) {
+  const sessions = readLog();
+  sessions.unshift(session); // newest first
+  if (sessions.length > 100) sessions.splice(100); // keep last 100
+  writeLog(sessions);
 }
 
 // ── Preview ───────────────────────────────────────────────────────
@@ -104,12 +123,17 @@ ipcMain.handle('organize', async (_, folderPath) => {
       }
     }
 
-    // Write log
-    const timestamp = new Date().toISOString();
-    const logEntry = `\n[${timestamp}] Organized "${folderPath}"\n` +
-      moved.map(m => `  MOVED: ${m.name} -> ${m.category}/`).join('\n') +
-      (errors.length ? '\n' + errors.map(e => `  ERROR: ${e.name} - ${e.error}`).join('\n') : '') + '\n';
-    fs.appendFileSync(LOG_FILE, logEntry);
+    // Save structured JSON log
+    if (moved.length > 0 || errors.length > 0) {
+      appendSession({
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        folder: folderPath,
+        moved: moved.map(m => ({ name: m.name, category: m.category })),
+        errors: errors,
+        total: moved.length
+      });
+    }
 
   } catch (e) {
     errors.push({ name: 'General', error: e.message });
@@ -127,7 +151,6 @@ ipcMain.handle('undo', async (_, moves) => {
       if (fs.existsSync(m.to)) {
         fs.renameSync(m.to, m.from);
         restored.push(m.name);
-        // Remove category folder if empty
         const dir = path.dirname(m.to);
         if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
       }
@@ -147,21 +170,32 @@ ipcMain.handle('pick-folder', async () => {
   return result.canceled ? null : result.filePaths[0];
 });
 
-// ── Open log ──────────────────────────────────────────────────────
-ipcMain.handle('open-log', async () => {
-  if (fs.existsSync(LOG_FILE)) shell.openPath(LOG_FILE);
-  else return 'No log file yet.';
-});
-
+// ── Get Downloads path ────────────────────────────────────────────
 ipcMain.handle('get-downloads', async () => {
   return path.join(os.homedir(), 'Downloads');
+});
+
+// ── Log viewer handlers ───────────────────────────────────────────
+ipcMain.handle('get-log', async () => {
+  return readLog();
+});
+
+ipcMain.handle('clear-log', async () => {
+  writeLog([]);
+  return true;
+});
+
+ipcMain.handle('delete-session', async (_, id) => {
+  const sessions = readLog().filter(s => s.id !== id);
+  writeLog(sessions);
+  return true;
 });
 
 // ── Window controls ───────────────────────────────────────────────
 ipcMain.on('minimize', () => mainWindow.minimize());
 ipcMain.on('close', () => mainWindow.close());
 
-// ── Schedule helpers (returns info only — actual scheduling via schtasks) ──
+// ── Schedule ──────────────────────────────────────────────────────
 ipcMain.handle('schedule', async (_, folderPath) => {
   const exePath = app.getPath('exe');
   const cmd = `schtasks /create /tn "DownloadsOrganizer" /tr "${exePath} --organize \\"${folderPath}\\"" /sc weekly /d MON /st 09:00 /f`;
