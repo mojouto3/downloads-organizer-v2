@@ -42,7 +42,32 @@ const CATEGORIES = {
   Torrents:   ['.torrent']
 };
 
-const LOG_FILE = path.join(os.homedir(), 'downloads-organizer.json');
+const LOG_FILE    = path.join(os.homedir(), 'downloads-organizer.json');
+const GROUPS_FILE = path.join(os.homedir(), 'downloads-organizer-groups.json');
+
+// ── Groups helpers ────────────────────────────────────────────────
+function readGroups() {
+  try {
+    if (fs.existsSync(GROUPS_FILE)) return JSON.parse(fs.readFileSync(GROUPS_FILE, 'utf8'));
+  } catch (e) {}
+  return [];
+}
+
+function writeGroups(groups) {
+  fs.writeFileSync(GROUPS_FILE, JSON.stringify(groups, null, 2));
+}
+
+// Normalize a string: lowercase, remove separators, trim
+function normalize(str) {
+  return str.toLowerCase().replace(/[._\-,\s]+/g, '');
+}
+
+// Check if a filename contains a group name (ignoring separators and case)
+function filenameMatchesGroup(filename, groupName) {
+  const normalizedFile = normalize(path.basename(filename, path.extname(filename)));
+  const normalizedGroup = normalize(groupName);
+  return normalizedFile.includes(normalizedGroup);
+}
 
 function getCategory(ext) {
   for (const [cat, exts] of Object.entries(CATEGORIES)) {
@@ -189,6 +214,83 @@ ipcMain.handle('delete-session', async (_, id) => {
   const sessions = readLog().filter(s => s.id !== id);
   writeLog(sessions);
   return true;
+});
+
+// ── Smart Group handlers ──────────────────────────────────────────
+ipcMain.handle('get-groups', async () => {
+  return readGroups();
+});
+
+ipcMain.handle('save-groups', async (_, groups) => {
+  writeGroups(groups);
+  return true;
+});
+
+ipcMain.handle('preview-groups', async (_, folderPath) => {
+  const groups = readGroups();
+  if (!groups.length) return [];
+
+  const results = [];
+  try {
+    const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter(f => f.isFile());
+    for (const f of files) {
+      for (const group of groups) {
+        if (filenameMatchesGroup(f.name, group.name)) {
+          results.push({ name: f.name, group: group.name });
+          break;
+        }
+      }
+    }
+  } catch (e) {}
+  return results;
+});
+
+ipcMain.handle('organize-groups', async (_, folderPath) => {
+  const groups = readGroups();
+  const moved = [];
+  const errors = [];
+
+  try {
+    const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter(f => f.isFile());
+
+    for (const f of files) {
+      for (const group of groups) {
+        if (filenameMatchesGroup(f.name, group.name)) {
+          // Use proper capitalized folder name
+          const folderName = group.name.charAt(0).toUpperCase() + group.name.slice(1);
+          const destFolder = path.join(folderPath, folderName);
+          if (!fs.existsSync(destFolder)) fs.mkdirSync(destFolder, { recursive: true });
+
+          const src  = path.join(folderPath, f.name);
+          const dest = getUniqueDest(destFolder, f.name);
+
+          try {
+            fs.renameSync(src, dest);
+            moved.push({ name: f.name, group: folderName, from: src, to: dest });
+          } catch (e) {
+            errors.push({ name: f.name, error: e.message });
+          }
+          break;
+        }
+      }
+    }
+
+    if (moved.length > 0 || errors.length > 0) {
+      appendSession({
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        folder: folderPath,
+        type: 'smart-group',
+        moved: moved.map(m => ({ name: m.name, category: m.group })),
+        errors,
+        total: moved.length
+      });
+    }
+  } catch (e) {
+    errors.push({ name: 'General', error: e.message });
+  }
+
+  return { moved, errors };
 });
 
 // ── Window controls ───────────────────────────────────────────────

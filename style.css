@@ -285,6 +285,65 @@ body {
   text-overflow: ellipsis;
 }
 
+/* ── Smart Group ── */
+.group-input-row {
+  display: flex; gap: 8px; margin-bottom: 12px;
+}
+.group-input-row input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 12px;
+  outline: none;
+}
+.group-input-row input:focus { border-color: var(--green); }
+
+.group-list {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  min-height: 32px;
+}
+.group-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-dim);
+  border: 1px solid rgba(61,219,61,0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+.group-chip-delete {
+  background: none; border: none;
+  color: var(--green); cursor: pointer;
+  font-size: 12px; padding: 0;
+  opacity: 0.6; line-height: 1;
+}
+.group-chip-delete:hover { opacity: 1; color: var(--danger); }
+
+.group-preview-list {
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 220px; overflow-y: auto;
+}
+.group-preview-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 10px;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.group-preview-filename {
+  flex: 1; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.group-preview-arrow { color: var(--text-dim); font-size: 11px; }
+.group-preview-dest {
+  color: var(--green); font-weight: 600;
+  white-space: nowrap;
+}
+
 /* ── Toast ── */
 .toast {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
