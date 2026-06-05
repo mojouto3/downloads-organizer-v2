@@ -19,6 +19,7 @@
     <button class="lang-btn" id="langBtn" onclick="toggleLang()">GR</button>
     <button class="nav-btn" id="navHome" onclick="showPage('home')" data-en="Organize" data-gr="Οργάνωση">Organize</button>
     <button class="nav-btn" id="navLog" onclick="showPage('log')" data-en="History" data-gr="Ιστορικό">History</button>
+    <button class="nav-btn" id="navGroup" onclick="showPage('group')" data-en="Smart Group" data-gr="Έξυπνη Ομαδοποίηση">Smart Group</button>
     <button class="win-btn" onclick="window.api.minimize()">&#8722;</button>
     <button class="win-btn close-btn" onclick="window.api.close()">&#x2715;</button>
   </div>
@@ -103,6 +104,72 @@
     </div>
     <div id="logList" class="log-list"></div>
   </div>
+</div>
+
+<!-- ══ PAGE: SMART GROUP ══ -->
+<div class="page" id="pageGroup" style="display:none">
+
+  <!-- Folder selector -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">&#128194;</span>
+      <span class="card-title" data-en="Select Folder" data-gr="Επιλογή Φακέλου">Select Folder</span>
+    </div>
+    <div class="folder-row">
+      <input type="text" id="groupFolderInput" readonly
+        data-placeholder-en="Click to choose a folder..."
+        data-placeholder-gr="Κάντε κλικ για να επιλέξετε φάκελο..."
+        placeholder="Click to choose a folder..."/>
+      <button class="btn btn-primary" onclick="pickGroupFolder()" data-en="Browse" data-gr="Αναζήτηση">Browse</button>
+      <button class="btn btn-secondary" onclick="useDownloadsGroup()" data-en="My Downloads" data-gr="Λήψεις μου">My Downloads</button>
+    </div>
+  </div>
+
+  <!-- Groups manager -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">&#127981;</span>
+      <span class="card-title" data-en="Stores / Groups" data-gr="Μαγαζιά / Ομάδες">Stores / Groups</span>
+      <span class="badge" id="groupCount">0 groups</span>
+    </div>
+    <div class="group-input-row">
+      <input type="text" id="groupNameInput"
+        data-placeholder-en="e.g. magazi1, Nike, SuperMarket..."
+        data-placeholder-gr="π.χ. magazi1, Nike, SuperMarket..."
+        placeholder="e.g. magazi1, Nike, SuperMarket..."/>
+      <button class="btn btn-green" onclick="addGroup()" data-en="Add" data-gr="Προσθήκη">Add</button>
+    </div>
+    <div class="group-list" id="groupList"></div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card" id="groupPreviewCard" style="display:none">
+    <div class="card-header">
+      <span class="card-icon">&#128064;</span>
+      <span class="card-title" data-en="Preview" data-gr="Προεπισκόπηση">Preview</span>
+      <span class="badge" id="groupPreviewCount"></span>
+    </div>
+    <div class="group-preview-list" id="groupPreviewList"></div>
+    <div class="action-row">
+      <button class="btn btn-green btn-lg" id="groupOrganizeBtn" onclick="organizeGroups()" data-en="Organize Now" data-gr="Οργάνωση Τώρα">Organize Now</button>
+      <button class="btn btn-secondary" onclick="resetGroupView()" data-en="Cancel" data-gr="Ακύρωση">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card" id="groupResultsCard" style="display:none">
+    <div class="card-header">
+      <span class="card-icon">&#9989;</span>
+      <span class="card-title" data-en="Done!" data-gr="Ολοκληρώθηκε!">Done!</span>
+      <span class="badge badge-green" id="groupMovedCount"></span>
+    </div>
+    <div class="results-grid" id="groupResultsGrid"></div>
+    <div class="action-row">
+      <button class="btn btn-secondary" onclick="undoGroups()" data-en="&#8629; Undo" data-gr="&#8629; Αναίρεση">&#8629; Undo</button>
+      <button class="btn btn-green" onclick="resetGroupView()" data-en="Organize Another" data-gr="Νέα Οργάνωση">Organize Another</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- Toast -->
